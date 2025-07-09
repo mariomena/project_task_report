@@ -56,9 +56,9 @@
                                             <t t-if="images">
                                                 <div class="row mt-2">
                                                     <t t-foreach="images" t-as="img">
-                                                        <div class="col-6 text-center mb-3">
-                                                            <!-- Llama a la función de rotación y construye el data URI -->
-                                                            <img t-attf-src="data:image/png;base64,{{ task._get_rotated_image_b64(img) }}" style="max-width: 220px; max-height: 300px; border: 1px solid #ddd; object-fit: contain;"/>
+                                                        <div class="col-4 text-center mb-3">
+                                                            <!-- Usamos el helper estándar de Odoo. El estilo se encarga de ajustar la imagen. -->
+                                                            <img t-att-src="image_data_uri(img.datas)" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd; object-fit: contain;"/>
                                                         </div>
                                                     </t>
                                                 </div>

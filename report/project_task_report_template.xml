@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_project_task" model="ir.actions.report">
+        <field name="name">Reporte de Tarea</field>
+        <field name="model">project.task</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">project_task_report.report_task_body_template</field>
+        <field name="report_file">project_task_report.report_task_body_template</field>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_task_body_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h1 t-field="doc.name"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h3>Descripción</h3>
+                                    <p><span t-field="doc.description"/></p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-5">
+                                <div class="col-12">
+                                    <h3>Evidencias Adjuntas</h3>
+                                    <t t-set="images" t-value="doc._get_attached_images()"/>
+                                    <t t-if="not images">
+                                        <p>No hay imágenes adjuntas.</p>
+                                    </t>
+                                    <t t-if="images">
+                                        <div class="row">
+                                            <t t-foreach="images" t-as="img">
+                                                <div class="col-6 text-center mb-3">
+                                                    <img t-att-src="image_data_uri(img.datas)" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd;"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

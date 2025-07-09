@@ -12,41 +12,64 @@
 
     <template id="report_task_body_template">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
+            <!-- 1. Itera sobre cada TAREA PRINCIPAL seleccionada -->
+            <t t-foreach="docs" t-as="task">
                 <t t-call="web.external_layout">
                     <div class="page">
                         <div class="container">
+                            <!-- Muestra el nombre de la TAREA PRINCIPAL -->
                             <div class="row">
                                 <div class="col-12">
-                                    <h1 t-field="doc.name"/>
+                                    <h1>Tarea Principal: <span t-field="task.name"/></h1>
+                                    <hr/>
                                 </div>
                             </div>
 
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <h3>Descripción</h3>
-                                    <p><span t-field="doc.description"/></p>
-                                </div>
-                            </div>
+                            <!-- 2. Itera sobre cada SUBTAREA de la tarea principal -->
+                            <t t-foreach="task.child_ids" t-as="subtask">
+                                <div class="subtask-block" style="margin-top: 20px; page-break-inside: avoid;">
+                                    <!-- Nombre de la Subtarea -->
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h3>Subtarea: <span t-field="subtask.name"/></h3>
+                                        </div>
+                                    </div>
 
-                            <div class="row mt-5">
-                                <div class="col-12">
-                                    <h3>Evidencias Adjuntas</h3>
-                                    <t t-set="images" t-value="doc._get_attached_images()"/>
-                                    <t t-if="not images">
-                                        <p>No hay imágenes adjuntas.</p>
-                                    </t>
-                                    <t t-if="images">
-                                        <div class="row">
-                                            <t t-foreach="images" t-as="img">
-                                                <div class="col-6 text-center mb-3">
-                                                    <img t-att-src="image_data_uri(img.datas)" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd;"/>
+                                    <!-- Descripción de la Subtarea -->
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <strong>Descripción:</strong>
+                                            <p><span t-field="subtask.description"/></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Evidencias de la Subtarea -->
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <strong>Evidencias Adjuntas:</strong>
+                                            <!-- Llama a la función para obtener las imágenes de la SUBTAREA -->
+                                            <t t-set="images" t-value="subtask._get_attached_images()"/>
+                                            <t t-if="not images">
+                                                <p>No hay imágenes adjuntas para esta subtarea.</p>
+                                            </t>
+                                            <t t-if="images">
+                                                <div class="row mt-2">
+                                                    <t t-foreach="images" t-as="img">
+                                                        <div class="col-6 text-center mb-3">
+                                                            <img t-att-src="image_data_uri(img.datas)" style="max-width: 100%; max-height: 250px; border: 1px solid #ddd;"/>
+                                                        </div>
+                                                    </t>
                                                 </div>
                                             </t>
                                         </div>
-                                    </t>
+                                    </div>
                                 </div>
-                            </div>
+                                <hr style="margin-top: 20px;"/>
+                            </t>
+
+                             <t t-if="not task.child_ids">
+                                <p>Esta tarea no tiene subtareas.</p>
+                            </t>
                         </div>
                     </div>
                 </t>

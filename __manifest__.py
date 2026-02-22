@@ -10,7 +10,10 @@
         'project',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'report/project_task_report_template.xml',
+        'report/project_executive_report_template.xml',
+        'wizard/project_executive_report_wizard_views.xml',
     ],
     'installable': True,
     'application': False,

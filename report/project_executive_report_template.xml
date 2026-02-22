@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Declaración del Action del Reporte -->
+    <record id="action_report_project_executive" model="ir.actions.report">
+        <field name="name">Reporte Ejecutivo de Proyectos</field>
+        <field name="model">project.executive.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">project_task_report.report_executive_template</field>
+        <field name="report_file">project_task_report.report_executive_template</field>
+    </record>
+
+    <!-- Template Principal -->
+    <template id="report_executive_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h1 class="text-center mb-5">Reporte Ejecutivo</h1>
+                    
+                    <t t-if="not grouped_data">
+                         <div class="alert alert-info">
+                             No se encontraron tareas con los filtros seleccionados.
+                         </div>
+                    </t>
+
+                    <t t-if="grouped_data">
+                        <!-- Iterar Categoría (Nombre de Tarea Padre: Ej. S.O.S) -->
+                        <t t-foreach="grouped_data.keys()" t-as="task_category">
+                            <h2 t-esc="task_category" style="margin-top: 30px; font-weight: bold; background-color: #f2f2f2; padding: 10px;"/>
+                            
+                            <!-- Iterar Proyectos dentro de la categoría (Ej. Puente Zaragoza, Puente Guadalupe) -->
+                            <t t-foreach="grouped_data[task_category].keys()" t-as="project_name">
+                                <h3 t-esc="project_name" style="margin-left: 15px; margin-top: 20px; font-weight: semi-bold; color: #555; border-bottom: 2px solid #ddd; padding-bottom: 5px;"/>
+                                
+                                <t t-set="subtasks" t-value="grouped_data[task_category][project_name]"/>
+
+                                <t t-if="not subtasks">
+                                    <p style="margin-left: 30px; font-style: italic;">No hay subtareas registradas para este proyecto en esta categoría.</p>
+                                </t>
+
+                                <t t-if="subtasks">
+                                    <!-- Iterar Subtareas (Ej. S.O.S-001) -->
+                                    <t t-foreach="subtasks" t-as="subtask">
+                                        <div class="subtask-block" style="margin-left: 30px; margin-top: 15px; page-break-inside: avoid;">
+                                            <h4 t-esc="subtask.name" style="color: #005b96;"/>
+                                            
+                                            <t t-if="subtask.description">
+                                                <div style="margin-bottom: 15px; font-size: 0.9em;">
+                                                    <strong>Descripción:</strong> <span t-raw="subtask.description"/>
+                                                </div>
+                                            </t>
+
+                                            <!-- Evidencias Fotográficas -->
+                                            <div class="row mt-2">
+                                                <t t-set="images" t-value="subtask._get_attached_images()"/>
+                                                
+                                                <t t-if="not images">
+                                                    <div class="col-12" style="font-size: 0.85em; color:#777;">
+                                                        <i>Sin fotografías adjuntas.</i>
+                                                    </div>
+                                                </t>
+                                                
+                                                <t t-if="images">
+                                                    <t t-foreach="images" t-as="img">
+                                                        <div class="col-6 col-md-3 text-center mb-3">
+                                                            <img t-att-src="image_data_uri(img.datas)" style="max-height: 200px; max-width: 100%; border: 1px solid #ccc; object-fit: contain; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);"/>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                            <br/>
+                                            <div style="width: 100%; border-top: 1px dashed #eee;"/>
+                                        </div>
+                                    </t>
+                                </t>
+                            </t>
+                            <br/><br/>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
